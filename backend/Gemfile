@@ -78,6 +78,9 @@ gem 'lograge', '~> 0.11'
 # gem 'jsonapi-serializer', '~> 2.2'
 gem 'oj', '~> 3.13'
 
+# github api gem for ruby
+gem 'octokit', '~> 4.0'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   # gem 'bullet', '~> 6.1'
@@ -104,6 +107,10 @@ group :development do
   gem 'solargraph', '~> 0.43'
   gem 'spring', '~> 2.1'
 end
+
+group :test do
+  gem 'webmock', '~> 3.14'
+end 
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
