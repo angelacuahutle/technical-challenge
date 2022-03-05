@@ -81,6 +81,9 @@ gem 'oj', '~> 3.13'
 # github api gem for ruby
 gem 'octokit', '~> 4.0'
 
+#handle authentication
+gem 'devise'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   # gem 'bullet', '~> 6.1'
