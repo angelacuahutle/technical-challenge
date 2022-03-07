@@ -15,9 +15,19 @@ class QueriesController < ApplicationController
 
   # POST /queries
   def create
-    @query = Query.new(query_params)
+    response = Octokit::Client.new.repositories(query_params[:name]).to_h
+    user_found = response&.user.to_json
+    repositories = response.repositories.to_json
+
+    @query = current_user.queries.new(
+      name = query_params[:name],
+      profile_url = user_found.profile_url,
+      repositories = repositories,
+      avatar = user_found.avatar
+    )
 
     if @query.save
+      # render html: ...
       render json: @query, status: :created, location: @query
     else
       render json: @query.errors, status: :unprocessable_entity
