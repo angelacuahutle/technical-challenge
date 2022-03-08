@@ -1,0 +1,7 @@
+<h1 class="">Search Users Repositories and Info about Github Users!</h1>
+
+<%= form_with url: user_queries_path(current_user), method: :post do |form| %>
+  <%= form.label :name, "Search by Github username:" %>
+  <%= form.text_field :name %>
+  <%= form.submit "Search" %>
+<% end %>

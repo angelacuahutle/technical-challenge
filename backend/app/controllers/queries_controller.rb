@@ -1,5 +1,12 @@
 class QueriesController < ApplicationController
   before_action :set_query, only: [:show, :update, :destroy]
+  def new
+    @query = Query.new
+
+    respond_to do |format|
+      format.html
+    end
+  end
 
   # GET /queries
   def index
@@ -15,15 +22,17 @@ class QueriesController < ApplicationController
 
   # POST /queries
   def create
-    response = Octokit::Client.new.repositories(query_params[:name]).to_h
-    user_found = response&.user.to_json
-    repositories = response.repositories.to_json
+    response = Octokit::Client.new.repositories(params[:name]).to_a
+    user_found = Octokit::Client.new.user(params[:name]).to_h
+    repositories = response.map do |repo|
+      repo.to_h.slice(:id, :name, :html_url, :description)
+    end
 
     @query = current_user.queries.new(
-      name = query_params[:name],
-      profile_url = user_found.profile_url,
-      repositories = repositories,
-      avatar = user_found.avatar
+      name: query_params[:name],
+      profile_url: user_found[:html_url],
+      repositories: repositories,
+      avatar: user_found[:avatar_url]
     )
 
     if @query.save

@@ -1,14 +1,12 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  resources :users
   devise_for :users
   resources :users do
     resources :queries, only: [:index, :new, :create]
+    get '/users/:user_id/queries/new', to: 'queries#new'
   end
-  #root 'users/queries/index'
-
-
+  root 'queries#new'
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   namespace :api do
     namespace :v1 do
@@ -18,4 +16,3 @@ Rails.application.routes.draw do
     end
   end
 end
-  
