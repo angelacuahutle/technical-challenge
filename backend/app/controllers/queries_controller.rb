@@ -1,23 +1,21 @@
-class QueriesController < ApplicationController
+class QueriesController < ActionController::Base
   before_action :set_query, only: [:show, :update, :destroy]
   def new
     @query = Query.new
 
-    respond_to do |format|
-      format.html
-    end
+    # respond_to do |format|
+    #   format.html
+    # end
   end
 
   # GET /queries
   def index
-    @queries = Query.all
-
-    render json: @queries
+    #@queries = current_user.queries.all
   end
 
   # GET /queries/1
   def show
-    render json: @query
+    @query = Query.find(params[:id])
   end
 
   # POST /queries
@@ -35,21 +33,17 @@ class QueriesController < ApplicationController
       avatar: user_found[:avatar_url]
     )
 
-    # render html: ...
+    @queries = current_user.queries.all
+
+    #binding.pry
     respond_to do |format|
-      format.html do
-        if @query.save
-          render html: @query
-        else
-          render html: @query.errors
-        end
-      end
-      forrmat.json do
-        if @query.save
-          render json: @query, status: :created, location: @query
-        else
-          render json: @query.errors, status: :unprocessable_entity
-        end
+      if @query.save
+        #format.html { redirect_to @query, notice: 'User found!' }
+        #format.js { render 'queries/create' }# { render layout: false }
+        format.json #{ render json: @query, status: :created, location: @query }
+      else
+        #format.html { render html: @query.errors }
+        format.json { render json: @query.errors, status: :unprocessable_entity }
       end
     end
   end
