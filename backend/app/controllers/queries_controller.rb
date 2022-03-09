@@ -35,11 +35,22 @@ class QueriesController < ApplicationController
       avatar: user_found[:avatar_url]
     )
 
-    if @query.save
-      # render html: ...
-      render json: @query, status: :created, location: @query
-    else
-      render json: @query.errors, status: :unprocessable_entity
+    # render html: ...
+    respond_to do |format|
+      format.html do
+        if @query.save
+          render html: @query
+        else
+          render html: @query.errors
+        end
+      end
+      forrmat.json do
+        if @query.save
+          render json: @query, status: :created, location: @query
+        else
+          render json: @query.errors, status: :unprocessable_entity
+        end
+      end
     end
   end
 
