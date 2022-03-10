@@ -1,0 +1,3 @@
+<% @query.repositories.map do |repo| %>
+  <%= sanitize(display(repo)) %> 
+<% end %>

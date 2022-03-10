@@ -1,5 +1,8 @@
-class QueriesController < ActionController::Base
+class QueriesController < ApplicationController
+  include ActionView::Layouts
+  include ActionController::Rendering
   before_action :set_query, only: [:show, :update, :destroy]
+
   def new
     @query = Query.new
 
@@ -10,12 +13,14 @@ class QueriesController < ActionController::Base
 
   # GET /queries
   def index
-    #@queries = current_user.queries.all
+    @queries = current_user.queries.all
   end
 
   # GET /queries/1
   def show
     @query = Query.find(params[:id])
+
+    render html: @query
   end
 
   # POST /queries
@@ -27,7 +32,7 @@ class QueriesController < ActionController::Base
     end
 
     @query = current_user.queries.new(
-      name: query_params[:name],
+      name: params[:name],
       profile_url: user_found[:html_url],
       repositories: repositories,
       avatar: user_found[:avatar_url]
@@ -35,15 +40,14 @@ class QueriesController < ActionController::Base
 
     @queries = current_user.queries.all
 
-    #binding.pry
     respond_to do |format|
       if @query.save
-        #format.html { redirect_to @query, notice: 'User found!' }
+        format.html { render 'queries/show' } # @query, notice: 'User found!' }
         #format.js { render 'queries/create' }# { render layout: false }
-        format.json #{ render json: @query, status: :created, location: @query }
+        #format.json #{ render json: @query, status: :created, location: @query }
       else
-        #format.html { render html: @query.errors }
-        format.json { render json: @query.errors, status: :unprocessable_entity }
+        format.html { render html: @query.errors }
+        #format.json { render json: @query.errors, status: :unprocessable_entity }
       end
     end
   end
