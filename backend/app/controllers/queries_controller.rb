@@ -1,14 +1,8 @@
 class QueriesController < ApplicationController
-  include ActionView::Layouts
-  include ActionController::Rendering
   before_action :set_query, only: [:show, :update, :destroy]
 
   def new
     @query = Query.new
-
-    # respond_to do |format|
-    #   format.html
-    # end
   end
 
   # GET /queries
@@ -25,29 +19,13 @@ class QueriesController < ApplicationController
 
   # POST /queries
   def create
-    response = Octokit::Client.new.repositories(params[:name]).to_a
-    user_found = Octokit::Client.new.user(params[:name]).to_h
-    repositories = response.map do |repo|
-      repo.to_h.slice(:id, :name, :html_url, :description)
-    end
-
-    @query = current_user.queries.new(
-      name: params[:name],
-      profile_url: user_found[:html_url],
-      repositories: repositories,
-      avatar: user_found[:avatar_url]
-    )
-
-    @queries = current_user.queries.all
+    build_query_from_octokit
 
     respond_to do |format|
       if @query.save
-        format.html { render 'queries/show' } # @query, notice: 'User found!' }
-        #format.js { render 'queries/create' }# { render layout: false }
-        #format.json #{ render json: @query, status: :created, location: @query }
+        format.html { render 'queries/show' }
       else
         format.html { render html: @query.errors }
-        #format.json { render json: @query.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -67,13 +45,36 @@ class QueriesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_query
-      @query = Query.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def query_params
-      params.fetch(:query, {})
+  def build_query
+    @query = current_user.queries.new(
+      name: params[:name],
+      profile_url: @user_found[:html_url],
+      repositories: @repositories,
+      avatar: @user_found[:avatar_url]
+    )
+  end
+
+  def request_to_octokit
+    response = Octokit::Client.new.repositories(params[:name]).to_a
+    @user_found = Octokit::Client.new.user(params[:name]).to_h
+    @repositories = response.map do |repo|
+      repo.to_h.slice(:id, :name, :html_url, :description)
     end
+  end
+
+  def build_query_from_octokit
+    request_to_octokit
+    build_query
+  end
+
+  # Use callbacks to share common setup or constraints between actions.
+  def set_query
+    @query = Query.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def query_params
+    params.fetch(:query, {})
+  end
 end
