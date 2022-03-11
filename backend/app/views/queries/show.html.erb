@@ -1,0 +1,5 @@
+<% @query.repositories.map do |repo| %>
+  <%= tag.h2 repo['name'] %>
+  <%= link_to repo['html_url'] %>
+  <%= tag.p repo['description'] %>
+<% end %>
