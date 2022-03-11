@@ -10,7 +10,6 @@ RSpec.describe QueriesController, type: :routing do
       expect(get: "/queries/1").to route_to("queries#show", id: "1")
     end
 
-
     it "routes to #create" do
       expect(post: "/queries").to route_to("queries#create")
     end

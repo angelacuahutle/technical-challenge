@@ -21,8 +21,8 @@ RSpec.configure do |config|
       :status => 'success',
       :data => []
     }
-    stub_request(:get, "https://github.com/search?").
-    to_return(status: 200, body: github_response.to_json)
+    stub_request(:get, "https://github.com/search?")
+      .to_return(status: 200, body: github_response.to_json)
   end
 
   # rspec-expectations config goes here. You can use an alternate

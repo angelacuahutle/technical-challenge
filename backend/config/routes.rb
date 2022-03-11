@@ -3,7 +3,7 @@
 Rails.application.routes.draw do
   devise_for :users
   resources :users do
-    resources :queries, only: [:index, :new, :create, :show] #, defaults: {format: :html}
+    resources :queries, only: [:index, :new, :create, :show] # , defaults: {format: :html}
     get '/users/:user_id/queries/new', to: 'queries#new'
   end
   root 'queries#new'
